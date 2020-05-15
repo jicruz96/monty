@@ -60,9 +60,8 @@ void monty(FILE *file)
 			continue;
 
 		f = get_op(token, &mode);
-
 		if (f == NULL)
-			GTFO(&h, l, "Unknown instruction ", &s);
+			GTFO(&h, l, "Unknown instruction", &s);
 
 		i = l;
 
@@ -77,6 +76,7 @@ void monty(FILE *file)
 				GTFO(&h, l, "usage: push integer", NULL);
 			}
 		}
+		free(s);
 		f(&h, i);
 	}
 }
