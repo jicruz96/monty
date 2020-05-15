@@ -50,7 +50,7 @@ void pstr(stack_t **h, unsigned int l)
 
 	(void)l;
 
-	for (; tmp && tmp->n > 0 && tmp->n < 256; tmp = tmp->next)
+	for (; tmp && tmp->n > 0 && tmp->n < 128; tmp = tmp->next)
 		putchar(tmp->n);
 
 	putchar('\n');
