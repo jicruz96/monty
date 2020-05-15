@@ -60,7 +60,7 @@ void monty(FILE *file)
 
 		f = get_op(token, &mode);
 		if (f == NULL)
-			GTFO(&h, l, "Unknown instruction", &s);
+			GTFO(&h, l, "unknown instruction", &s);
 
 		i = l;
 
