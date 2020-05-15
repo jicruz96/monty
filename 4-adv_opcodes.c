@@ -67,7 +67,7 @@ void pchar(stack_t **h, unsigned int l)
 	if (*h == NULL)
 		GTFO(h, l, "can't pchar, stack empty", NULL);
 
-	if ((*h)->n > 255 || (*h)->n < 0)
+	if ((*h)->n > 127 || (*h)->n < 0)
 		GTFO(h, l, "can't pchar, value out of range", NULL);
 
 	printf("%c\n", (*h)->n);
