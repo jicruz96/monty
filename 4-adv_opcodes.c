@@ -17,7 +17,7 @@ void rotl(stack_t **h, unsigned int l)
 
 /**
  * rotr - rotates the list right (puts bottom stack on top)
- * @h: pointer to stackk
+ * @h: pointer to stack
  * @l: line number
  * Return: void
  **/
@@ -62,10 +62,10 @@ void pstr(stack_t **h, unsigned int l)
 void pchar(stack_t **h, unsigned int l)
 {
 	if (*h == NULL)
-		exitor(h, l, "can't pchar, stack empty");
+		GTFO(h, l, "can't pchar, stack empty", NULL);
 
 	if ((*h)->n > 255 || (*h)->n < 0)
-		exitor(h, l, "can't pchar, value out of range");
+		GTFO(h, l, "can't pchar, value out of range", NULL);
 
 	printf("%c\n", (*h)->n);
 }

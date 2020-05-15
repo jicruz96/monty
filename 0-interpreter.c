@@ -10,19 +10,20 @@ FILE *file = NULL;
  **/
 int main(int ac, char *av[])
 {
+	int fd;
+
 	if (ac != 2)
-	{
-		dprintf(STDERR_FILENO, "USAGE: monty file\n");
-		exit(EXIT_FAILURE);
-	}
+		gtfo("USAGE: monty file");
+
+	fd = open(av[1], O_RDONLY);
+
+	if (fd == -1)
+		gtfo("Error: Can't open file");
 
 	file = fopen(av[1], "r");
 
 	if (file == NULL)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", av[1]);
-		exit(EXIT_FAILURE);
-	}
+		gtfo("Error: malloc failed");
 
 	monty(file);
 	return (0);
@@ -35,61 +36,63 @@ int main(int ac, char *av[])
  **/
 void monty(FILE *file)
 {
-	unsigned int line = 1, i;
-	int stack = 1;
-	size_t bufsize = 0;
-	char *tmp, *buf = NULL;
-	stack_t *head = NULL;
+	unsigned int l = 1, mode = 1, i;
+	size_t size = 0;
+	char *token, *s = NULL;
+	stack_t *h = NULL;
+	op f = NULL;
 
-	for (; 1; line++)
+	for (; 1; l++)
 	{
-		if (getline(&buf, &bufsize, file) == -1)
+		if (getline(&s, &size, file) == -1)
 		{
-			free(buf);
+			free(s);
 			fclose(file);
-			free_list(head);
+			free_list(h);
 			exit(EXIT_SUCCESS);
 		}
 
-		tmp = strtok(buf, " ");
-
-		if (strcmp(tmp, "push") != 0)
-		{
-			get_op(tmp, line, &head, &stack, &buf);
+		token = strtok(s, " \n\t");
+		if (token == NULL)
 			continue;
-		}
 
-		for (i = 0, tmp = strtok(NULL, " "); tmp[i]; i++)
-			if ((tmp[i] < '0' && tmp[i] != '\n') || tmp[i] > '9')
+		f = get_op(token, &mode);
+
+		if (f == NULL)
+			GTFO(&h, l, "Unknown instruction ", &s);
+
+		i = l;
+
+		if (its_a_match("push", token))
+		{
+			token = strtok(NULL, " \n\t");
+			if (is_a_number(token))
+				i = atoi(token);
+			else
 			{
-				free(buf);
-				exitor(&head, line, "usage: push integer");
+				free(s);
+				GTFO(&h, l, "usage: push integer", NULL);
 			}
-
-		if (stack)
-			add_top(&head, atoi(tmp));
-		else
-			add_bottom(&head, atoi(tmp));
+		}
+		f(&h, i);
 	}
 }
 
 /**
- * get_op - matches a string with an op function and executes
- * @s: string to match with an op func
- * @l: line number of string
- * @h: head pointer to list
- * @stack: if true, treat stack as stack. if false, treat as queue
- * @buf: buffer holding rest of line. imported for deletion
- * Return: void
+ * get_op - matches a string with an op function
+ * @token: string to match with an op func
+ * @mode: if 1, list is stack. if 0, list is queue
+ * Return: matched op function | NULL if no match found
  **/
-void get_op(char *s, unsigned int l, stack_t **h, int *stack, char **buf)
+op get_op(char *token, unsigned int *mode)
 {
+	int i;
 	instruction_t ops[] = {
+		{"push", add_top},
 		{"pall", pall},
 		{"pint", pint},
 		{"pop", pop},
 		{"swap", swap},
-		{"nop", nop},
 		{"add", add_op},
 		{"sub", sub},
 		{"div", div_op},
@@ -99,46 +102,65 @@ void get_op(char *s, unsigned int l, stack_t **h, int *stack, char **buf)
 		{"rotl", rotl},
 		{"rotr", rotr},
 		{"pstr", pstr},
+		{"nop", nop},
 	};
-	size_t size = sizeof(ops) / sizeof(instruction_t), i;
 
-	for (i = 0; i < size; i++)
-		if (its_a_match(ops[i].opcode, s))
-		{
-			free(*buf);
-			ops[i].f(h, l);
-			*buf = NULL;
-			return;
-		}
-
-	if (its_a_match("stack", s))
-		*stack = 1;
-	else if (its_a_match("queue", s))
-		*stack = 0;
-	else if (*s != '#')
+	if (its_a_match("stack", token))
 	{
-		dprintf(STDERR_FILENO, "L%u: Unknown instruction %s", l, s);
-		free(*buf);
-		exitor(h, 0, NULL);
+		*mode = 1;
+		return (nop);
 	}
+	if (its_a_match("queue", token))
+	{
+		*mode = 0;
+		return (nop);
+	}
+	if (*mode == 0)
+		ops[0].f = add_bottom;
+
+	for (i = 0; i < 14; i++)
+		if (its_a_match(ops[i].opcode, token))
+			return (ops[i].f);
+
+	if (*token == '#')
+		return (nop);
+
+	return (NULL);
 }
 
 /**
  * its_a_match - matches a command to an op_code
- * @s1: opcode
- * @s2: command
+ * @opcode: opcode
+ * @token: command
  * Return: 1 if match, 0 if not
  **/
-int its_a_match(char *s1, char *s2)
+int its_a_match(char *opcode, char *token)
 {
 	int i;
 
-	for (i = 0; s1[i]; i++)
-		if (s1[i] != s2[i])
+	for (i = 0; opcode[i]; i++)
+		if (opcode[i] != token[i])
 			return (0);
 
-	if (s2[i] != '\n' && s2[i] != ' ' && s2[i] != '\0')
+	if (token[i] != '\0')
 		return (0);
 
 	return (1);
+}
+
+/**
+ * is_a_number - returns true if the string is a number
+ * @s: string
+ * Return: true if number | false if not number
+ **/
+bool is_a_number(char *s)
+{
+	if (*s == '-')
+		s++;
+
+	for (; *s; s++)
+		if (*s < '0' || *s > '9')
+			return (false);
+
+	return (true);
 }

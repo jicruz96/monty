@@ -10,6 +10,9 @@ void add_top(stack_t **h, unsigned int n)
 {
 	stack_t *new = malloc(sizeof(stack_t));
 
+	if (new == NULL)
+		GTFO(h, 0, "Error: malloc failed", NULL);
+
 	new->n = (int)n;
 	new->next = NULL;
 	new->prev = NULL;
@@ -30,7 +33,10 @@ void add_bottom(stack_t **h, unsigned int n)
 {
 	stack_t *new = malloc(sizeof(stack_t)), *tmp;
 
-	new->n = n;
+	if (new == NULL)
+		GTFO(h, 0, "Error: malloc failed", NULL);
+
+	new->n = (int)n;
 	new->next = NULL;
 	new->prev = NULL;
 
@@ -47,19 +53,41 @@ void add_bottom(stack_t **h, unsigned int n)
 }
 
 /**
- * exitor - prints error message and exits
+ * GTFO - prints error message and exits
  * @h: pointer to linked list
  * @l: current line number
  * @s: error message
+ * @s2: error message supplement
  * Return: void
  **/
-void exitor(stack_t **h, unsigned int l, char *s)
+void GTFO(stack_t **h, unsigned int l, char *s, char **s2)
 {
+	if (file)
+		fclose(file);
+	if (h)
+		free_list(*h);
 	if (l)
-		dprintf(STDERR_FILENO, "L%u: %s\n", l, s);
-	fclose(file);
-	free_list(*h);
+		dprintf(STDERR_FILENO, "L%u: ", l);
+	if (s)
+		dprintf(STDERR_FILENO, "%s", s);
+	if (s2)
+	{
+		dprintf(STDERR_FILENO, " %s", *s2);
+		free(*s2);
+	}
+	dprintf(STDERR_FILENO, "\n");
+
 	exit(EXIT_FAILURE);
+}
+
+/**
+ * gtfo - wrapper for simple version of GTFO
+ * @s: error message snippet
+ * Return: void
+ **/
+void gtfo(char *s)
+{
+	GTFO(NULL, 0, s, NULL);
 }
 
 /**

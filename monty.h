@@ -8,9 +8,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 extern FILE *file;
-extern int debug;
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -43,8 +43,11 @@ typedef struct instruction_s
 } instruction_t;
 
 typedef void (*op)(stack_t **, unsigned int);
+
+op get_op(char *, unsigned int *);
+int its_a_match(char *s1, char *s2);
+
 void monty(FILE *file);
-void exitor(stack_t **, unsigned int, char *);
 void free_list(stack_t *);
 void pall(stack_t **, unsigned int);
 void pint(stack_t **, unsigned int);
@@ -54,8 +57,8 @@ void mul(stack_t **, unsigned int);
 void mod(stack_t **, unsigned int);
 void queue(stack_t **, unsigned int);
 void stack(stack_t **, unsigned int);
-void nop(stack_t **, unsigned int);
 void pop(stack_t **, unsigned int);
+void nop(stack_t **, unsigned int);
 void swap(stack_t **, unsigned int);
 void sub(stack_t **, unsigned int);
 void pchar(stack_t **, unsigned int);
@@ -63,9 +66,10 @@ void rotl(stack_t **, unsigned int);
 void rotr(stack_t **, unsigned int);
 void pstr(stack_t **, unsigned int);
 void error(stack_t **, unsigned int);
-void get_op(char *, unsigned int, stack_t **, int *, char **);
 void add_top(stack_t **, unsigned int);
-int its_a_match(char *s1, char *s2);
 void add_bottom(stack_t **, unsigned int);
+void gtfo(char *);
+void GTFO(stack_t **, unsigned int, char *, char **);
+bool is_a_number(char *s);
 
 #endif /* MONTY_H */

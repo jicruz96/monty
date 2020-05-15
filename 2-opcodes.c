@@ -25,7 +25,7 @@ void pall(stack_t **h, unsigned int l)
 void pint(stack_t **h, unsigned int l)
 {
 	if (*h == NULL)
-		exitor(h, l, "can't pint, stack empty");
+		GTFO(h, l, "can't pint, stack empty", NULL);
 
 	printf("%d\n", (*h)->n);
 }
@@ -39,7 +39,7 @@ void pint(stack_t **h, unsigned int l)
 void pop(stack_t **h, unsigned int l)
 {
 	if (*h == NULL)
-		exitor(h, l, "can't pop an empty stack");
+		GTFO(h, l, "can't pop an empty stack", NULL);
 
 	if ((*h)->next)
 	{
@@ -64,7 +64,7 @@ void swap(stack_t **h, unsigned int l)
 	int tmp;
 
 	if (*h == NULL || (*h)->next == NULL)
-		exitor(h, l, "can't swap, stack too short");
+		GTFO(h, l, "can't swap, stack too short", NULL);
 
 	tmp = (*h)->n;
 	(*h)->n = (*h)->next->n;
