@@ -46,11 +46,14 @@ void rotr(stack_t **h, unsigned int l)
  **/
 void pstr(stack_t **h, unsigned int l)
 {
-	if (*h && (*h)->n > 0 && (*h)->n < 256)
-	{
-		printf("%c\n", (*h)->n);
-		pstr(&((*h)->next), l);
-	}
+	stack_t *tmp = *h;
+
+	(void)l;
+
+	for (; tmp && tmp->n > 0 && tmp->n < 256; tmp = tmp->next)
+		putchar(tmp->n);
+
+	putchar('\n');
 }
 
 /**

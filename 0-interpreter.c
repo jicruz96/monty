@@ -54,7 +54,6 @@ void monty(FILE *file)
 			free_list(h);
 			exit(EXIT_SUCCESS);
 		}
-
 		token = strtok(s, " \n\t");
 		if (token == NULL)
 			continue;
