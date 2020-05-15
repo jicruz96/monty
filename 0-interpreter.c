@@ -22,7 +22,8 @@ int main(int ac, char *av[])
 	if (access_check)
 		GTFO(NULL, 0, "Error: Can't open file", &filename);
 
-	file = fopen(av[1], "r");
+	file = fopen(filename, "r");
+	free(filename);
 
 	if (file == NULL)
 		gtfo("Error: malloc failed");
