@@ -11,14 +11,16 @@ FILE *file = NULL;
 int main(int ac, char *av[])
 {
 	int access_check;
+	char *filename;
 
 	if (ac != 2)
 		gtfo("USAGE: monty file");
 
-	access_check = access(av[1], R_OK);
+	filename = strdup(av[1]);
+	access_check = access(filename, R_OK);
 
 	if (access_check)
-		gtfo("Error: Can't open file");
+		GTFO(NULL, 0, "Error: Can't open file", &filename);
 
 	file = fopen(av[1], "r");
 
