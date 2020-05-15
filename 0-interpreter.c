@@ -158,8 +158,14 @@ int its_a_match(char *opcode, char *token)
  **/
 bool is_a_number(char *s)
 {
+	if (s == NULL)
+		return (false);
+
 	if (*s == '-')
 		s++;
+
+	if (*s == '\0')
+		return (false);
 
 	for (; *s; s++)
 		if (*s < '0' || *s > '9')
