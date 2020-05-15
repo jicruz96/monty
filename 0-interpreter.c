@@ -78,6 +78,7 @@ void monty(FILE *file)
 		}
 		free(s);
 		f(&h, i);
+		s = NULL;
 	}
 }
 
