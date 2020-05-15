@@ -79,9 +79,6 @@ void swap(stack_t **h, unsigned int l)
  **/
 void nop(stack_t **h, unsigned int l)
 {
-	int i = 1;
-
-	i++;
 	(void)h;
 	(void)l;
 }

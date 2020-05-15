@@ -10,14 +10,14 @@ FILE *file = NULL;
  **/
 int main(int ac, char *av[])
 {
-	int fd;
+	int access_check;
 
 	if (ac != 2)
 		gtfo("USAGE: monty file");
 
-	fd = open(av[1], O_RDONLY);
+	access_check = access(av[1], R_OK);
 
-	if (fd == -1)
+	if (access_check)
 		gtfo("Error: Can't open file");
 
 	file = fopen(av[1], "r");
@@ -118,7 +118,7 @@ op get_op(char *token, unsigned int *mode)
 	if (*mode == 0)
 		ops[0].f = add_bottom;
 
-	for (i = 0; i < 14; i++)
+	for (i = 0; i < 15; i++)
 		if (its_a_match(ops[i].opcode, token))
 			return (ops[i].f);
 
