@@ -33,7 +33,7 @@ void rotr(stack_t **h, unsigned int l)
 	if (tmp && tmp->prev)
 	{
 		add_top(h, tmp->n);
-		tmp->prev = NULL;
+		tmp->prev->next = NULL;
 		free(tmp);
 	}
 }

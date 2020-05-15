@@ -40,6 +40,8 @@ void mul(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
 		GTFO(h, l, "can't mul, stack too short", NULL);
+	if ((*h)->n == 0)
+		GTFO(h, l, "division by zero", NULL);
 	(*h)->next->n *= (*h)->n;
 	pop(h, l);
 }
