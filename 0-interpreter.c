@@ -48,11 +48,7 @@ int main(int ac, char *av[])
  **/
 op get_op(char *opcode)
 {
-	instruction_t *p, ops[] = {{"push", add_top}, {"pall", pall}, {"pint", pint},
-								{"pop", pop}, {"swap", swap}, {"add", add_op},
-								{"sub", sub}, {"div", div_op}, {"mul", mul}, {"mod", mod},
-								{"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr},
-								{"stack", stack}, {"queue", queue}, {"nop", NULL}, {NULL, NULL}};
+	instruction_t *p, ops[] = {{"push", add_top}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap}, {"add", add_op}, {"sub", sub}, {"div", div_op}, {"mul", mul}, {"mod", mod}, {"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr}, {"stack", stack}, {"queue", queue}, {"nop", NULL}, {NULL, NULL}};
 
 	if (opcode == NULL || *opcode == '#')
 		return (NULL);
@@ -83,7 +79,7 @@ unsigned int get_num(op f, unsigned int line_no, char *a)
 	if (f != add_bottom && f != add_top)
 		return (line_no);
 
-	for (; *a; a++)
+	for (; a && *a; a++)
 	{
 		if (*a == '-')
 		{
