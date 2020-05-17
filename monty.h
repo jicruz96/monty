@@ -9,8 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdbool.h>
-
-extern FILE *file;
+#include <ctype.h>
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -29,6 +28,25 @@ typedef struct stack_s
 } stack_t;
 
 /**
+ * struct global_s - struct of global variables
+ * @file: pointer to file
+ * @head: pointer to linked list
+ * @buf: pointer to command buffer
+ * @mode: 0 = stack mode | 1 = queue mode
+ *
+ * Description: pointer variables are global so 
+ * 				GTFO can free them at exit. mode
+ * 				sets behavior of stack.
+ **/
+typedef struct global_s
+{
+	FILE *file;
+	stack_t *head;
+	char *buf;
+	int mode;
+} global_t;
+
+/**
  * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
@@ -42,13 +60,12 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+extern global_t g;
+
 typedef void (*op)(stack_t **, unsigned int);
 
-op get_op(char *, unsigned int *);
-int its_a_match(char *s1, char *s2);
+op get_op(char *);
 
-void monty(FILE *file);
-void free_list(stack_t *);
 void pall(stack_t **, unsigned int);
 void pint(stack_t **, unsigned int);
 void add_op(stack_t **, unsigned int);
@@ -58,7 +75,6 @@ void mod(stack_t **, unsigned int);
 void queue(stack_t **, unsigned int);
 void stack(stack_t **, unsigned int);
 void pop(stack_t **, unsigned int);
-void nop(stack_t **, unsigned int);
 void swap(stack_t **, unsigned int);
 void sub(stack_t **, unsigned int);
 void pchar(stack_t **, unsigned int);
@@ -68,8 +84,8 @@ void pstr(stack_t **, unsigned int);
 void error(stack_t **, unsigned int);
 void add_top(stack_t **, unsigned int);
 void add_bottom(stack_t **, unsigned int);
-void gtfo(char *);
-void GTFO(stack_t **, unsigned int, char *, char **);
-bool is_a_number(char *s);
+void GTFO(char *, unsigned int);
+unsigned int get_num(op, unsigned int, char *);
+void cleanup(void);
 
 #endif /* MONTY_H */
