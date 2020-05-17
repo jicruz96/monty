@@ -14,16 +14,18 @@ int main(int ac, char *av[])
 	size_t size = 0;
 	op f = NULL;
 
-	if (access(av[1], R_OK) == -1 || ac != 2)
+	if (ac != 2)
+		GTFO("USAGE: monty file", 0);
+
+	if (access(av[1], R_OK) == -1)
 	{
-		if (ac != 2)
-			fprintf(stderr, "USAGE: monty file\n");
-		else
-			fprintf(stderr, "Error: Can't open file %s\n", av[1]);
+		dprintf(2, "Error: Can't open file %s\n", av[1]);
 		exit(EXIT_FAILURE);
 	}
 
 	g.file = fopen(av[1], "r");
+	/*if (g.file == NULL)
+		GTFO("Error: malloc failed", 0);*/
 
 	for (; 1; line_no++)
 	{
@@ -60,7 +62,7 @@ op get_op(char *opcode)
 		if (strcmp(p->opcode, (const char *)opcode) == 0)
 			return (p->f);
 
-	fprintf(stderr, "unknown instruction %s\n", opcode);
+	dprintf(2, "unknown instruction %s\n", opcode);
 	cleanup();
 	exit(EXIT_FAILURE);
 }
