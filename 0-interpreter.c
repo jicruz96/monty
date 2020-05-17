@@ -24,8 +24,8 @@ int main(int ac, char *av[])
 	}
 
 	g.file = fopen(av[1], "r");
-	/*if (g.file == NULL)
-		GTFO("Error: malloc failed", 0);*/
+	if (g.file == NULL)
+		GTFO("Error: malloc failed", 0);
 
 	for (; 1; line_no++)
 	{
