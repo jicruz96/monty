@@ -34,9 +34,9 @@ typedef struct stack_s
  * @buf: pointer to command buffer
  * @mode: 0 = stack mode | 1 = queue mode
  *
- * Description: pointer variables are global so 
- * 				GTFO can free them at exit. mode
- * 				sets behavior of stack.
+ * Description: pointer variables are global so
+ *				GTFO can free them at exit. mode
+ *				sets behavior of stack.
  **/
 typedef struct global_s
 {
@@ -64,7 +64,7 @@ extern global_t g;
 
 typedef void (*op)(stack_t **, unsigned int);
 
-op get_op(char *);
+op get_op(char *, unsigned int);
 
 void pall(stack_t **, unsigned int);
 void pint(stack_t **, unsigned int);

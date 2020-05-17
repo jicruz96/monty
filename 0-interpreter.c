@@ -32,7 +32,7 @@ int main(int ac, char *av[])
 		if (getline(&g.buf, &size, g.file) == -1)
 			break;
 
-		f = get_op(strtok(g.buf, " \t\n"));
+		f = get_op(strtok(g.buf, " \t\n"), line_no);
 		if (f != NULL)
 		{
 			n = get_num(f, line_no, strtok(NULL, " \t\n"));
@@ -46,11 +46,16 @@ int main(int ac, char *av[])
 /**
  * get_op - matches a string with an op function
  * @opcode: string to match with an op func
+ * @line_no: line number of opcode - for errors
  * Return: matched op function | NULL if no match
  **/
-op get_op(char *opcode)
+op get_op(char *opcode, unsigned int line_no)
 {
-	instruction_t *p, ops[] = {{"push", add_top}, {"pall", pall}, {"pint", pint}, {"pop", pop}, {"swap", swap}, {"add", add_op}, {"sub", sub}, {"div", div_op}, {"mul", mul}, {"mod", mod}, {"pchar", pchar}, {"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr}, {"stack", stack}, {"queue", queue}, {"nop", NULL}, {NULL, NULL}};
+	instruction_t *p, ops[] = {{"push", add_top}, {"pall", pall}, {"pint", pint},
+								{"pop", pop}, {"swap", swap}, {"add", add_op}, {"sub", sub},
+								{"div", div_op}, {"mul", mul}, {"mod", mod}, {"pchar", pchar},
+								{"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr}, {"stack", stack},
+								{"queue", queue}, {"nop", NULL}, {NULL, NULL}};
 
 	if (opcode == NULL || *opcode == '#')
 		return (NULL);
@@ -62,7 +67,7 @@ op get_op(char *opcode)
 		if (strcmp(p->opcode, (const char *)opcode) == 0)
 			return (p->f);
 
-	dprintf(2, "unknown instruction %s\n", opcode);
+	dprintf(2, "L%u: unknown instruction %s\n", line_no, opcode);
 	cleanup();
 	exit(EXIT_FAILURE);
 }
