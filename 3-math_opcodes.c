@@ -9,7 +9,7 @@
 void add_op(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't add, stack too short", NULL);
+		GTFO("can't add, stack too short", l);
 	(*h)->next->n += (*h)->n;
 	pop(h, l);
 }
@@ -23,9 +23,9 @@ void add_op(stack_t **h, unsigned int l)
 void div_op(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't div, stack too short", NULL);
+		GTFO("can't div, stack too short", l);
 	if ((*h)->n == 0)
-		GTFO(h, l, "division by zero", NULL);
+		GTFO("division by zero", l);
 	(*h)->next->n /= (*h)->n;
 	pop(h, l);
 }
@@ -39,7 +39,7 @@ void div_op(stack_t **h, unsigned int l)
 void mul(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't mul, stack too short", NULL);
+		GTFO("can't mul, stack too short", l);
 	(*h)->next->n *= (*h)->n;
 	pop(h, l);
 }
@@ -53,7 +53,7 @@ void mul(stack_t **h, unsigned int l)
 void sub(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't sub, stack too short", NULL);
+		GTFO("can't sub, stack too short", l);
 	(*h)->next->n -= (*h)->n;
 	pop(h, l);
 }
@@ -67,9 +67,9 @@ void sub(stack_t **h, unsigned int l)
 void mod(stack_t **h, unsigned int l)
 {
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't mod, stack too short", NULL);
+		GTFO("can't mod, stack too short", l);
 	if ((*h)->n == 0)
-		GTFO(h, l, "division by zero", NULL);
+		GTFO("division by zero", l);
 	(*h)->next->n %= (*h)->n;
 	pop(h, l);
 }

@@ -57,18 +57,27 @@ void pstr(stack_t **h, unsigned int l)
 }
 
 /**
- * pchar - prints next element as a char
- * @h: pointer to stack
- * @l: line number
+ * stack - set mode to 1
+ * @h: head pointer to list (unused)
+ * @l: line number (unused)
  * Return: void
  **/
-void pchar(stack_t **h, unsigned int l)
+void stack(stack_t **h, unsigned int l)
 {
-	if (*h == NULL)
-		GTFO(h, l, "can't pchar, stack empty", NULL);
+	g.mode = 1;
+	(void)h;
+	(void)l;
+}
 
-	if ((*h)->n > 127 || (*h)->n < 0)
-		GTFO(h, l, "can't pchar, value out of range", NULL);
-
-	printf("%c\n", (*h)->n);
+/**
+ * queue - set mode to 0
+ * @h: head pointer to list (unused)
+ * @l: line number (unused)
+ * Return: void
+ **/
+void queue(stack_t **h, unsigned int l)
+{
+	g.mode = 0;
+	(void)h;
+	(void)l;
 }

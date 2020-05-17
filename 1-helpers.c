@@ -11,7 +11,7 @@ void add_top(stack_t **h, unsigned int n)
 	stack_t *new = malloc(sizeof(stack_t));
 
 	if (new == NULL)
-		GTFO(h, 0, "Error: malloc failed", NULL);
+		GTFO("Error: malloc failed", 0);
 
 	new->n = (int)n;
 	new->next = NULL;
@@ -34,7 +34,7 @@ void add_bottom(stack_t **h, unsigned int n)
 	stack_t *new = malloc(sizeof(stack_t)), *tmp;
 
 	if (new == NULL)
-		GTFO(h, 0, "Error: malloc failed", NULL);
+		GTFO("Error: malloc failed", 0);
 
 	new->n = (int)n;
 	new->next = NULL;
@@ -53,54 +53,56 @@ void add_bottom(stack_t **h, unsigned int n)
 }
 
 /**
- * GTFO - prints error message and exits
- * @h: pointer to linked list
- * @l: current line number
- * @s: error message
- * @s2: error message supplement
+ * cleanup - free all malloc'd pointers
  * Return: void
  **/
-void GTFO(stack_t **h, unsigned int l, char *s, char **s2)
+void cleanup(void)
 {
-	if (file)
-		fclose(file);
-	if (h)
-		free_list(*h);
-	if (l)
-		dprintf(STDERR_FILENO, "L%u: ", l);
-	if (s)
-		dprintf(STDERR_FILENO, "%s", s);
-	if (s2)
+	while (g.head && g.head->next != NULL)
 	{
-		dprintf(STDERR_FILENO, " %s", *s2);
-		free(*s2);
+		g.head = g.head->next;
+		free(g.head->prev);
 	}
-	dprintf(STDERR_FILENO, "\n");
+	free(g.head);
+	free(g.buf);
+	if (g.file)
+		fclose(g.file);
+}
 
+/**
+ * GTFO - prints error message and exits
+ * @line_no: current line number
+ * @s: error message
+ * Return: void
+ **/
+void GTFO(char *s, unsigned int line_no)
+{
+	if (line_no)
+		dprintf(STDERR_FILENO, "L%u: ", line_no);
+	dprintf(STDERR_FILENO, "%s\n", s);
+	cleanup();
 	exit(EXIT_FAILURE);
 }
 
 /**
- * gtfo - wrapper for simple version of GTFO
- * @s: error message snippet
- * Return: void
+ * not_number - checks if string is a number
+ * @s: string
+ * Return: true if number | false if not
  **/
-void gtfo(char *s)
+bool not_number(const char *s)
 {
-	GTFO(NULL, 0, s, NULL);
-}
+	if (s == NULL)
+		return (true);
 
-/**
- * free_list - frees list
- * @h: h pointer to list
- * Return: void
- */
-void free_list(stack_t *h)
-{
-	while (h && h->next != NULL)
-	{
-		h = h->next;
-		free(h->prev);
-	}
-	free(h);
+	if (*s == '-')
+		s++;
+
+	if (*s == '\0')
+		return (true);
+
+	for (; *s; s++)
+		if (*s < '0' || *s > '9')
+			return (true);
+
+	return (false);
 }

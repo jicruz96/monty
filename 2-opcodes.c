@@ -8,12 +8,11 @@
  **/
 void pall(stack_t **h, unsigned int l)
 {
-	stack_t *tmp;
-
-	(void)l;
-
-	for (tmp = *h; tmp; tmp = tmp->next)
-		printf("%d\n", tmp->n);
+	if (*h)
+	{
+		pint(h, l);
+		pall(&((*h)->next), l);
+	}
 }
 
 /**
@@ -25,7 +24,7 @@ void pall(stack_t **h, unsigned int l)
 void pint(stack_t **h, unsigned int l)
 {
 	if (*h == NULL)
-		GTFO(h, l, "can't pint, stack empty", NULL);
+		GTFO("can't pint, stack empty", l);
 
 	printf("%d\n", (*h)->n);
 }
@@ -39,7 +38,7 @@ void pint(stack_t **h, unsigned int l)
 void pop(stack_t **h, unsigned int l)
 {
 	if (*h == NULL)
-		GTFO(h, l, "can't pop an empty stack", NULL);
+		GTFO("can't pop an empty stack", l);
 
 	if ((*h)->next)
 	{
@@ -64,7 +63,7 @@ void swap(stack_t **h, unsigned int l)
 	int tmp;
 
 	if (*h == NULL || (*h)->next == NULL)
-		GTFO(h, l, "can't swap, stack too short", NULL);
+		GTFO("can't swap, stack too short", l);
 
 	tmp = (*h)->n;
 	(*h)->n = (*h)->next->n;
@@ -72,13 +71,18 @@ void swap(stack_t **h, unsigned int l)
 }
 
 /**
- * nop - do nothing
+ * pchar - prints next element as a char
  * @h: pointer to stack
  * @l: line number
  * Return: void
  **/
-void nop(stack_t **h, unsigned int l)
+void pchar(stack_t **h, unsigned int l)
 {
-	(void)h;
-	(void)l;
+	if (*h == NULL)
+		GTFO("can't pchar, stack empty", l);
+
+	if ((*h)->n > 127 || (*h)->n < 0)
+		GTFO("can't pchar, value out of range", l);
+
+	printf("%c\n", (*h)->n);
 }
