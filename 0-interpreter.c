@@ -89,7 +89,7 @@ unsigned int get_num(op f, unsigned int line_no, char *a)
 	if (a == NULL)
 		GTFO("usage: push integer", line_no);
 
-	while (*a == '-')
+	for (; *a == '-'; a++)
 		sign *= -1;
 
 	while (*a >= '0' && *a <= '9')
