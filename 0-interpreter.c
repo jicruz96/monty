@@ -52,10 +52,10 @@ int main(int ac, char *av[])
 op get_op(char *opcode, unsigned int line_no)
 {
 	instruction_t *p, ops[] = {{"push", add_top}, {"pall", pall}, {"pint", pint},
-								{"pop", pop}, {"swap", swap}, {"add", add_op}, {"sub", sub},
-								{"div", div_op}, {"mul", mul}, {"mod", mod}, {"pchar", pchar},
-								{"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr}, {"stack", stack},
-								{"queue", queue}, {"nop", NULL}, {NULL, NULL}};
+				{"pop", pop}, {"swap", swap}, {"add", add_op}, {"sub", sub},
+				{"div", div_op}, {"mul", mul}, {"mod", mod}, {"pchar", pchar},
+				{"pstr", pstr}, {"rotl", rotl}, {"rotr", rotr}, {"stack", stack},
+				{"queue", queue}, {"nop", NULL}, {NULL, NULL}};
 
 	if (opcode == NULL || *opcode == '#')
 		return (NULL);
@@ -86,23 +86,17 @@ unsigned int get_num(op f, unsigned int line_no, char *a)
 	if (f != add_bottom && f != add_top)
 		return (line_no);
 
-	for (; a && *a; a++)
-	{
-		if (*a == '-')
-		{
-			sign *= -1;
-			continue;
-		}
+	if (a == NULL)
+		GTFO("usage: push integer", line_no);
 
-		while (isdigit(*a))
-			i = (i * 10) + (*a++ - '0') * sign;
+	while (*a == '-')
+		sign *= -1;
 
-		if (*a)
-			break;
+	while (*a >= '0' && *a <= '9')
+		i = (i * 10) + (*a++ - '0') * sign;
 
-		return ((unsigned int)i);
-	}
+	if (*a)
+		GTFO("usage: push integer", line_no);
 
-	GTFO("usage: push integer", line_no);
-	return (0);
+	return ((unsigned int)i);
 }
